@@ -1,0 +1,2384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TidyTask - Professional Cleaning CRM</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        /* Auth Page Styles - Professional Design */
+        .auth-container {
+            max-width: 480px;
+            margin: 100px auto;
+            background: white;
+            padding: 3rem;
+            border-radius: 20px;
+            box-shadow: 0 25px 80px rgba(0,0,0,0.25);
+        }
+
+        .auth-container h2 {
+            margin-bottom: 0.75rem;
+            color: #1a202c;
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: 800;
+        }
+
+        .auth-subtitle {
+            text-align: center;
+            color: #64748b;
+            margin-bottom: 2.5rem;
+            font-size: 1rem;
+            line-height: 1.5;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #1a202c;
+            font-size: 0.95rem;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: all 0.2s;
+            background: #f8fafc;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-input::placeholder {
+            color: #94a3b8;
+        }
+
+        button {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 1rem;
+            margin-bottom: 0.75rem;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .btn-secondary {
+            background: #f1f5f9;
+            color: #64748b;
+            box-shadow: none;
+        }
+
+        .btn-secondary:hover {
+            background: #e2e8f0;
+            box-shadow: none;
+        }
+
+        .message {
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1.5rem;
+            display: none;
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+
+        .error {
+            background: #fee2e2;
+            color: #dc2626;
+            border: 1px solid #fecaca;
+        }
+
+        .success {
+            background: #d1fae5;
+            color: #059669;
+            border: 1px solid #a7f3d0;
+        }
+
+        .info {
+            background: #e0e7ff;
+            color: #4f46e5;
+            border: 1px solid #c7d2fe;
+        }
+
+        #auth {
+            display: block;
+        }
+
+        #auth.hidden {
+            display: none;
+        }
+
+        #app {
+            display: none;
+        }
+
+        #app.active {
+            display: block;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #1a202c;
+            font-size: 0.95rem;
+        }
+
+        input {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: all 0.2s;
+            background: #f8fafc;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        input::placeholder {
+            color: #94a3b8;
+        }
+
+        small {
+            color: #64748b;
+            font-size: 0.875rem;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            padding: 2rem;
+            border-radius: 16px;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            color: #1a202c;
+            margin-bottom: 0.5rem;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 1rem;
+            background: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            color: #64748b;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .tab.active {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+        }
+
+        .content-box {
+            background: white;
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            min-height: 500px;
+        }
+
+        .view {
+            display: none;
+        }
+
+        .view.active {
+            display: block;
+        }
+
+        /* Schedule */
+        .week-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        .week-nav button {
+            padding: 0.75rem 1.5rem;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .week-nav button:hover {
+            background: #5568d3;
+        }
+
+        .week-display {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: white;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            padding: 0.75rem 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+            letter-spacing: 0.5px;
+        }
+
+        .days-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .day-btn {
+            padding: 1rem;
+            background: #f1f5f9;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: #1a202c;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .day-btn:hover {
+            border-color: #667eea;
+        }
+
+        .day-btn.active {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border-color: transparent;
+        }
+
+        .jobs-section h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #1a202c;
+        }
+
+        .add-btn {
+            padding: 0.75rem 1.5rem;
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .add-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+        }
+
+        .job-card {
+            background: linear-gradient(to right, #f8fafc, white);
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .job-time {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 0.5rem;
+        }
+
+        .job-client {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #1a202c;
+            margin-bottom: 0.5rem;
+        }
+
+        .job-info {
+            color: #64748b;
+            margin-bottom: 0.5rem;
+        }
+
+        .staff-badge {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border-radius: 8px;
+            font-weight: 600;
+            margin-top: 0.5rem;
+            margin-right: 0.5rem;
+        }
+
+        .delete-btn {
+            padding: 0.5rem 1rem;
+            background: #fee2e2;
+            color: #dc2626;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 1rem;
+        }
+
+        .delete-btn:hover {
+            background: #fecaca;
+        }
+
+        /* Staff & Clients */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .card {
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 1.5rem;
+        }
+
+        .card h4 {
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+            color: #1a202c;
+        }
+
+        .card-info {
+            color: #64748b;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.7);
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 2rem;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            max-width: 600px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-content h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: #1a202c;
+        }
+
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #1a202c;
+        }
+
+        .form-input, .form-select, .form-textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: inherit;
+        }
+
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .staff-checkboxes {
+            max-height: 200px;
+            overflow-y: auto;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 1rem;
+        }
+
+        .staff-check-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .staff-check-item input {
+            width: 20px;
+            height: 20px;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .btn-cancel {
+            flex: 1;
+            padding: 0.75rem;
+            background: #f1f5f9;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .btn-submit {
+            flex: 1;
+            padding: 0.75rem;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: #64748b;
+        }
+
+        .empty-state-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.3;
+        }
+
+        /* Week View Styles */
+        .week-column {
+            background: #f8fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 1rem;
+            min-height: 400px;
+        }
+
+        .week-column-header {
+            font-weight: 700;
+            color: #1a202c;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #e2e8f0;
+            text-align: center;
+        }
+
+        .week-column-header.today {
+            color: #667eea;
+            background: linear-gradient(135deg, #667eea20, #764ba220);
+            margin: -1rem -1rem 1rem -1rem;
+            padding: 1rem;
+            border-radius: 10px 10px 0 0;
+        }
+
+        .week-job-card {
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 0.75rem;
+            margin-bottom: 0.75rem;
+            font-size: 0.875rem;
+        }
+
+        .week-job-time {
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 0.25rem;
+        }
+
+        .week-job-client {
+            font-weight: 600;
+            color: #1a202c;
+            margin-bottom: 0.25rem;
+        }
+
+        .week-job-info {
+            color: #64748b;
+            font-size: 0.8rem;
+        }
+
+        #week-jobs-container {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        @media (max-width: 1400px) {
+            #week-jobs-container {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+
+        @media (max-width: 900px) {
+            #week-jobs-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 600px) {
+            #week-jobs-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Auth Section -->
+    <div id="auth">
+        <div class="auth-container">
+            <h2>✨ TidyTask</h2>
+            <p class="auth-subtitle">Manage your cleaning business in the cloud</p>
+            
+            <div id="message" class="message"></div>
+            <div id="login-view">
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="login-email" placeholder="you@example.com">
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="login-password" placeholder="••••••••">
+                </div>
+                <button onclick="login()">Log In</button>
+                <button class="btn-secondary" onclick="showSignup()">Create Account</button>
+            </div>
+            
+            <div id="signup-view" style="display: none;">
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="signup-email" placeholder="you@example.com">
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="signup-password" placeholder="••••••••">
+                    <small style="color: #64748b; margin-top: 0.5rem; display: block;">At least 6 characters</small>
+                </div>
+                <button onclick="signup()">Create Account</button>
+                <button class="btn-secondary" onclick="showLogin()">Back to Login</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- App Section (after login) -->
+        <div id="app" style="display:none;">
+            <div class="container">
+                <div class="header">
+                    <h1>✨ TidyTask</h1>
+                    <div class="user-info">
+                        <span class="user-email" id="user-email-display"></span>
+                        <button class="btn-logout" onclick="logout()">Logout</button>
+                    </div>
+                </div>
+
+                <div class="tabs">
+                    <button class="tab active" onclick="switchTab('dashboard', event)">📊 Dashboard</button>
+                    <button class="tab" onclick="switchTab('schedule', event)">📅 Schedule</button>
+                    <button class="tab" onclick="switchTab('staff', event)">👷 Staff</button>
+                    <button class="tab" onclick="switchTab('clients', event)">👥 Clients</button>
+                </div>
+
+                <div class="content-box">
+                    <div class="loading" id="loading-data" style="display:none; text-align:center; padding:3rem; color:#64748b;">
+                        Loading your data...
+                    </div>
+                    
+                    <!-- Dashboard View -->
+            <div id="dashboard-view" class="view active">
+                <h3 style="margin-bottom: 1.5rem;">Business Overview</h3>
+                
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
+                    <!-- This Week Revenue -->
+                    <div style="background: linear-gradient(135deg, #10b981, #059669); color: white; padding: 2rem; border-radius: 12px;">
+                        <div style="font-size: 0.875rem; opacity: 0.9; margin-bottom: 0.5rem;">💰 THIS WEEK</div>
+                        <div style="font-size: 2.5rem; font-weight: 800;" id="dashboard-week-revenue">$0</div>
+                        <div style="font-size: 0.875rem; opacity: 0.9; margin-top: 0.5rem;" id="dashboard-week-jobs">0 jobs scheduled</div>
+                    </div>
+                    
+                    <!-- This Month Revenue -->
+                    <div style="background: linear-gradient(135deg, #667eea, #764ba2); color: white; padding: 2rem; border-radius: 12px;">
+                        <div style="font-size: 0.875rem; opacity: 0.9; margin-bottom: 0.5rem;">📅 THIS MONTH</div>
+                        <div style="font-size: 2.5rem; font-weight: 800;" id="dashboard-month-revenue">$0</div>
+                        <div style="font-size: 0.875rem; opacity: 0.9; margin-top: 0.5rem;" id="dashboard-month-jobs">0 jobs scheduled</div>
+                    </div>
+                    
+                    <!-- Total Clients -->
+                    <div style="background: linear-gradient(135deg, #f59e0b, #d97706); color: white; padding: 2rem; border-radius: 12px;">
+                        <div style="font-size: 0.875rem; opacity: 0.9; margin-bottom: 0.5rem;">👥 ACTIVE CLIENTS</div>
+                        <div style="font-size: 2.5rem; font-weight: 800;" id="dashboard-clients">0</div>
+                        <div style="font-size: 0.875rem; opacity: 0.9; margin-top: 0.5rem;">Total clients</div>
+                    </div>
+                </div>
+            </div>
+
+            
+
+                    <!-- Schedule View -->
+            <div id="schedule-view" class="view">
+                <div class="week-nav">
+                    <button onclick="changeWeek(-1)">← Previous</button>
+                    <div class="week-display" id="week-display">This Week</div>
+                    <button onclick="changeWeek(1)">Next →</button>
+                </div>
+
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                    <h3 style="margin: 0;">Schedule</h3>
+                    <div style="display: flex; gap: 0.5rem;">
+                        <button class="day-btn" id="day-view-btn" onclick="setViewMode('day')" style="padding: 0.5rem 1rem;">Day View</button>
+                        <button class="day-btn" id="week-view-btn" onclick="setViewMode('week')" style="padding: 0.5rem 1rem;">Week View</button>
+                    </div>
+                </div>
+
+                <div class="days-grid" id="days-grid"></div>
+
+                <div class="jobs-section" id="single-day-section">
+                    <h3 id="day-title">Select a Day</h3>
+                    <button class="add-btn" onclick="openJobModal()">➕ Add Job</button>
+                    <div id="jobs-list"></div>
+                </div>
+
+                <div id="week-view-section" style="display: none;">
+                    <button class="add-btn" onclick="openJobModal()">➕ Add Job</button>
+                    <div id="week-jobs-container"></div>
+                </div>
+            </div>
+
+            
+
+                    <!-- Staff View -->
+            <div id="staff-view" class="view">
+                <h3 style="margin-bottom: 1rem;">Staff Members</h3>
+                <button class="add-btn" onclick="openStaffModal()">➕ Add Staff</button>
+                <div id="staff-list" class="grid"></div>
+            </div>
+
+            
+
+                    <!-- Clients View -->
+            <div id="clients-view" class="view">
+                <h3 style="margin-bottom: 1rem;">Clients</h3>
+                <button class="add-btn" onclick="openClientModal()">➕ Add Client</button>
+                <div id="clients-list" class="grid"></div>
+            </div>
+        </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ========================================
+        // REPLACE THESE WITH YOUR CREDENTIALS
+        // ========================================
+        const SUPABASE_URL = 'https://aiohduvqsmzquffpeqfh.supabase.co'
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFpb2hkdXZxc216cXVmZnBlcWZoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg5MTQ3NzIsImV4cCI6MjA4NDQ5MDc3Mn0.Knkurg7FL4hsSKpAoC_2OhmDmCszk_UCBxAnuZhbv5A'
+        
+        // Initialize Supabase
+        let supabaseClient;
+        try {
+            supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY)
+            console.log('✅ Supabase initialized')
+        } catch (error) {
+            showMessage('Failed to initialize Supabase. Check your credentials.', 'error')
+            console.error('Supabase init error:', error)
+        }
+        
+        let currentUser = null;
+
+        
+        // =====================================
+        // SUPABASE CRUD FUNCTIONS
+        // =====================================
+        
+        let clients = []
+        let staff = []
+        let jobs = []
+        
+        async function loadAllData() {
+            try {
+                document.getElementById('loading-data').style.display = 'block'
+                
+                // Load clients
+                const { data: c_data, error: c_error } = await supabaseClient
+                    .from('clients')
+                    .select('*')
+                    .order('created_at', { ascending: false })
+                if (c_error) throw c_error
+                clients = c_data || []
+                
+                // Load staff
+                const { data: s_data, error: s_error } = await supabaseClient
+                    .from('staff')
+                    .select('*')
+                    .order('created_at', { ascending: false })
+                if (s_error) throw s_error
+                staff = s_data || []
+                
+                // Load jobs
+                const { data: j_data, error: j_error } = await supabaseClient
+                    .from('jobs')
+                    .select('*')
+                    .order('date', { ascending: true })
+                if (j_error) throw j_error
+                jobs = j_data || []
+                
+                console.log('✅ Data loaded:', clients.length, 'clients,', staff.length, 'staff,', jobs.length, 'jobs')
+                
+                document.getElementById('loading-data').style.display = 'none'
+                document.getElementById('dashboard-view').classList.add('active')
+                document.getElementById('dashboard-view').style.display = 'block'
+                
+                // Initialize the app
+                init()
+                
+            } catch (error) {
+                console.error('❌ Load error:', error)
+                document.getElementById('loading-data').innerHTML = 'Error loading data: ' + error.message
+            }
+        }
+        
+        async function saveClient(client) {
+            try {
+                client.user_id = currentUser.id
+                const { data, error } = await supabaseClient.from('clients').insert([client]).select()
+                if (error) throw error
+                console.log('✅ Client saved:', data[0])
+                return data[0]
+            } catch (error) {
+                console.error('❌ Save client error:', error)
+                alert('Error saving client: ' + error.message)
+                return null
+            }
+        }
+        
+        async function updateClient(client) {
+            try {
+                const { error } = await supabaseClient.from('clients').update(client).eq('id', client.id)
+                if (error) throw error
+                console.log('✅ Client updated')
+            } catch (error) {
+                console.error('❌ Update client error:', error)
+                alert('Error updating client: ' + error.message)
+            }
+        }
+        
+        async function deleteClientDB(id) {
+            try {
+                const { error } = await supabaseClient.from('clients').delete().eq('id', id)
+                if (error) throw error
+                console.log('✅ Client deleted')
+            } catch (error) {
+                console.error('❌ Delete client error:', error)
+                alert('Error deleting client: ' + error.message)
+            }
+        }
+        
+        async function saveStaff(staffMember) {
+            try {
+                staffMember.user_id = currentUser.id
+                const { data, error } = await supabaseClient.from('staff').insert([staffMember]).select()
+                if (error) throw error
+                console.log('✅ Staff saved:', data[0])
+                return data[0]
+            } catch (error) {
+                console.error('❌ Save staff error:', error)
+                alert('Error saving staff: ' + error.message)
+                return null
+            }
+        }
+        
+        async function updateStaff(staffMember) {
+            try {
+                const { error } = await supabaseClient.from('staff').update(staffMember).eq('id', staffMember.id)
+                if (error) throw error
+                console.log('✅ Staff updated')
+            } catch (error) {
+                console.error('❌ Update staff error:', error)
+                alert('Error updating staff: ' + error.message)
+            }
+        }
+        
+        async function deleteStaffDB(id) {
+            try {
+                const { error } = await supabaseClient.from('staff').delete().eq('id', id)
+                if (error) throw error
+                console.log('✅ Staff deleted')
+            } catch (error) {
+                console.error('❌ Delete staff error:', error)
+                alert('Error deleting staff: ' + error.message)
+            }
+        }
+        
+        async function saveJob(job) {
+            try {
+                job.user_id = currentUser.id
+                const { data, error } = await supabaseClient.from('jobs').insert([job]).select()
+                console.log('🔍 DEBUG: Database response:', { data, error });
+                if (error) throw error
+                console.log('✅ Job saved:', data[0])
+                return data[0]
+            } catch (error) {
+                console.error('❌ Save job error:', error)
+                alert('Error saving job: ' + error.message)
+                return null
+            }
+        }
+        
+        async function updateJob(job) {
+            try {
+                const { error } = await supabaseClient.from('jobs').update(job).eq('id', job.id)
+                if (error) throw error
+                console.log('✅ Job updated')
+            } catch (error) {
+                console.error('❌ Update job error:', error)
+                alert('Error updating job: ' + error.message)
+            }
+        }
+        
+        async function deleteJobDB(id) {
+            try {
+                const { error } = await supabaseClient.from('jobs').delete().eq('id', id)
+                if (error) throw error
+                console.log('✅ Job deleted')
+            } catch (error) {
+                console.error('❌ Delete job error:', error)
+                alert('Error deleting job: ' + error.message)
+            }
+        }
+        
+        // Show message
+        function showMessage(text, type) {
+            const msg = document.getElementById('message')
+            msg.textContent = text
+            msg.className = 'message ' + type
+            msg.style.display = 'block'
+            setTimeout(() => msg.style.display = 'none', 5000)
+        }
+        
+        // Show/hide views
+        function showLogin() {
+            document.getElementById('login-view').style.display = 'block'
+            document.getElementById('signup-view').style.display = 'none'
+        }
+        
+        function showSignup() {
+            document.getElementById('login-view').style.display = 'none'
+            document.getElementById('signup-view').style.display = 'block'
+        }
+        
+        function showApp() {
+            document.getElementById('auth').style.display = 'none'
+            document.getElementById('app').style.display = 'block'
+            if (currentUser) {
+                const emailEl = document.getElementById('user-email-display')
+                if (emailEl) emailEl.textContent = currentUser.email
+            }
+            loadAllData()
+        }
+        
+        function showAuth() {
+            document.getElementById('auth').style.display = 'block'
+            document.getElementById('app').style.display = 'none'
+            showLogin()
+        }
+        
+        // Login
+        async function login() {
+            const email = document.getElementById('login-email').value
+            const password = document.getElementById('login-password').value
+            
+            if (!email || !password) {
+                showMessage('Please enter email and password', 'error')
+                return
+            }
+            
+            try {
+                const { data, error } = await supabaseClient.auth.signInWithPassword({
+                    email: email,
+                    password: password
+                })
+                
+                if (error) throw error
+                
+                currentUser = data.user
+                showMessage('Login successful!', 'success')
+                showApp()
+                
+            } catch (error) {
+                console.error('Login error:', error)
+                showMessage('Login failed: ' + error.message, 'error')
+            }
+        }
+        
+        // Signup
+        async function signup() {
+            const email = document.getElementById('signup-email').value
+            const password = document.getElementById('signup-password').value
+            
+            if (!email || !password) {
+                showMessage('Please enter email and password', 'error')
+                return
+            }
+            
+            if (password.length < 6) {
+                showMessage('Password must be at least 6 characters', 'error')
+                return
+            }
+            
+            try {
+                const { data, error } = await supabaseClient.auth.signUp({
+                    email: email,
+                    password: password
+                })
+                
+                if (error) throw error
+                
+                showMessage('Account created! Check your email to confirm, then log in.', 'success')
+                showLogin()
+                
+            } catch (error) {
+                console.error('Signup error:', error)
+                showMessage('Signup failed: ' + error.message, 'error')
+            }
+        }
+        
+        // Logout
+        async function logout() {
+            await supabaseClient.auth.signOut()
+            currentUser = null
+            showMessage('Logged out', 'info')
+            showAuth()
+        }
+        
+        // Check if already logged in
+        async function checkAuth() {
+            try {
+                const { data: { session } } = await supabaseClient.auth.getSession()
+                
+                if (session) {
+                    currentUser = session.user
+                    showApp()
+                } else {
+                    showAuth()
+                }
+            } catch (error) {
+                console.error('Auth check error:', error)
+                showAuth()
+            }
+        }
+        
+        // Initialize
+        checkAuth()
+        
+        
+        let currentWeek = 0;
+        let selectedDay = null;
+        let selectedDate = null;
+        let viewMode = 'day'; // 'day' or 'week'
+
+        // INIT
+        function init() {
+            
+            renderDashboard();
+            renderDays();
+            renderStaff();
+            renderClients();
+        }
+
+        // RENDER DASHBOARD
+        function renderDashboard() {
+            // Get current week range
+            const today = new Date();
+            const startOfWeek = new Date(today);
+            const day = today.getDay();
+            const diff = today.getDate() - day + (day === 0 ? -6 : 1);
+            startOfWeek.setDate(diff);
+            startOfWeek.setHours(0, 0, 0, 0);
+            
+            const endOfWeek = new Date(startOfWeek);
+            endOfWeek.setDate(startOfWeek.getDate() + 6);
+            endOfWeek.setHours(23, 59, 59, 999);
+            
+            // Get month range
+            const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+            const endOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+            
+            // Calculate week revenue
+            const weekJobs = jobs.filter(j => {
+                const jobDate = new Date(j.date);
+                return jobDate >= startOfWeek && jobDate <= endOfWeek;
+            });
+            
+            let weekRevenue = 0;
+            weekJobs.forEach(job => {
+                const client = clients.find(c => c.id === job.client_id);
+                console.log('🔍 Job lookup - job.client_id:', job.client_id, 'type:', typeof job.client_id);
+                console.log('🔍 Available clients:', clients.map(c => ({id: c.id, type: typeof c.id, name: c.name})));
+                console.log('🔍 Found client:', client);
+                if (client && client.rate) {
+                    // Revenue = rate per hour × hours × number of staff
+                    const staffCount = job.staff_ids ? job.staff_ids.length : 1;
+                    weekRevenue += client.rate * job.hours * staffCount;
+                }
+            });
+            
+            // Calculate month revenue
+            const monthJobs = jobs.filter(j => {
+                const jobDate = new Date(j.date);
+                return jobDate >= startOfMonth && jobDate <= endOfMonth;
+            });
+            
+            let monthRevenue = 0;
+            monthJobs.forEach(job => {
+                const client = clients.find(c => c.id === job.client_id);
+                console.log('🔍 Job lookup - job.client_id:', job.client_id, 'type:', typeof job.client_id);
+                console.log('🔍 Available clients:', clients.map(c => ({id: c.id, type: typeof c.id, name: c.name})));
+                console.log('🔍 Found client:', client);
+                if (client && client.rate) {
+                    const staffCount = job.staff_ids ? job.staff_ids.length : 1;
+                    monthRevenue += client.rate * job.hours * staffCount;
+                }
+            });
+            
+            // Update dashboard
+            document.getElementById('dashboard-week-revenue').textContent = '$' + weekRevenue.toLocaleString('en-AU', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+            document.getElementById('dashboard-week-jobs').textContent = weekJobs.length + ' jobs scheduled';
+            
+            document.getElementById('dashboard-month-revenue').textContent = '$' + monthRevenue.toLocaleString('en-AU', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+            document.getElementById('dashboard-month-jobs').textContent = monthJobs.length + ' jobs scheduled';
+            
+            document.getElementById('dashboard-clients').textContent = clients.length;
+        }
+
+        // WEEK NAVIGATION
+        function changeWeek(dir) {
+            currentWeek += dir;
+            renderDays();
+            if (viewMode === 'week') {
+                renderWeekView();
+            } else if (selectedDay !== null) {
+                selectDay(selectedDay);
+            }
+        }
+
+        function getMonday(weekOffset) {
+            const today = new Date();
+            const day = today.getDay();
+            const diff = today.getDate() - day + (day === 0 ? -6 : 1);
+            const monday = new Date(today.setDate(diff));
+            monday.setDate(monday.getDate() + (weekOffset * 7));
+            return monday;
+        }
+
+        function renderDays() {
+            const monday = getMonday(currentWeek);
+            const grid = document.getElementById('days-grid');
+            const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+            const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            
+            console.log('🔍 renderDays called - monday:', monday, 'currentWeek:', currentWeek);
+            
+            grid.innerHTML = '';
+            
+            for (let i = 0; i < 7; i++) {
+                const date = new Date(monday);
+                date.setDate(monday.getDate() + i);
+                const dateStr = date.toISOString().split('T')[0];
+                
+                const dayName = days[i];
+                const monthName = monthNames[date.getMonth()];
+                const dayNum = date.getDate();
+                
+                console.log(`🔍 Day ${i}: ${dayName} ${monthName} ${dayNum}`);
+                
+                const btn = document.createElement('button');
+                btn.className = 'day-btn';
+                // FIXED FORMAT: Shows "Mon" and "Jan 27" 
+                btn.innerHTML = `<div style="font-weight: 700; font-size: 1.1rem;">${dayName}</div><div style="font-size: 0.9rem; margin-top: 0.25rem; opacity: 0.85;">${monthName} ${dayNum}</div>`;
+                btn.onclick = () => selectDay(i, dateStr);
+                
+                if (selectedDay === i) {
+                    btn.classList.add('active');
+                }
+                
+                grid.appendChild(btn);
+            }
+            
+            // Update week display
+            const sunday = new Date(monday);
+            sunday.setDate(monday.getDate() + 6);
+            
+            const startMonth = monthNames[monday.getMonth()];
+            const endMonth = monthNames[sunday.getMonth()];
+            
+            if (startMonth === endMonth) {
+                document.getElementById('week-display').textContent = `${startMonth} ${monday.getDate()}-${sunday.getDate()}`;
+            } else {
+                document.getElementById('week-display').textContent = `${startMonth} ${monday.getDate()} - ${endMonth} ${sunday.getDate()}`;
+            }
+        }
+
+        function selectDay(dayIndex, dateStr) {
+            selectedDay = dayIndex;
+            selectedDate = dateStr;
+            
+            // Update button states
+            document.querySelectorAll('.days-grid .day-btn').forEach((btn, i) => {
+                btn.classList.toggle('active', i === dayIndex);
+            });
+            
+            if (viewMode === 'day') {
+                const date = new Date(dateStr);
+                document.getElementById('day-title').textContent = 
+                    date.toLocaleDateString('en-AU', {weekday: 'long', month: 'long', day: 'numeric'});
+                
+                renderJobs();
+            }
+        }
+
+        function setViewMode(mode) {
+            viewMode = mode;
+            
+            // Update button styles
+            document.getElementById('day-view-btn').classList.toggle('active', mode === 'day');
+            document.getElementById('week-view-btn').classList.toggle('active', mode === 'week');
+            
+            // Show/hide appropriate sections
+            if (mode === 'day') {
+                document.getElementById('single-day-section').style.display = 'block';
+                document.getElementById('week-view-section').style.display = 'none';
+                document.getElementById('days-grid').style.display = 'grid';
+                
+                // If no day selected, select today
+                if (selectedDay === null) {
+                    const today = new Date();
+                    const day = today.getDay();
+                    const dayIndex = day === 0 ? 6 : day - 1;
+                    selectDay(dayIndex, today.toISOString().split('T')[0]);
+                } else {
+                    renderJobs();
+                }
+            } else {
+                document.getElementById('single-day-section').style.display = 'none';
+                document.getElementById('week-view-section').style.display = 'block';
+                document.getElementById('days-grid').style.display = 'none';
+                renderWeekView();
+            }
+        }
+
+        function renderWeekView() {
+            const container = document.getElementById('week-jobs-container');
+            const monday = getMonday(currentWeek);
+            const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+            const fullDays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+            const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            
+            const today = new Date().toISOString().split('T')[0];
+            
+            let html = '';
+            
+            for (let i = 0; i < 7; i++) {
+                const date = new Date(monday);
+                date.setDate(monday.getDate() + i);
+                const dateStr = date.toISOString().split('T')[0];
+                
+                const dayJobs = jobs.filter(j => j.date === dateStr).sort((a,b) => a.time.localeCompare(b.time));
+                
+                const isToday = dateStr === today;
+                
+                html += `
+                    <div class="week-column">
+                        <div class="week-column-header ${isToday ? 'today' : ''}">
+                            <div style="font-weight: 600;">${days[i]}</div>
+                            <div style="font-size: 0.875rem; font-weight: 500; opacity: 0.9;">${monthNames[date.getMonth()]} ${date.getDate()}</div>
+                        </div>
+                `;
+                
+                if (dayJobs.length === 0) {
+                    html += `<div style="text-align: center; color: #94a3b8; padding: 2rem; font-size: 0.875rem;">No jobs</div>`;
+                } else {
+                    dayJobs.forEach(job => {
+                        const client = clients.find(c => c.id === job.client_id);
+                console.log('🔍 Job lookup - job.client_id:', job.client_id, 'type:', typeof job.client_id);
+                console.log('🔍 Available clients:', clients.map(c => ({id: c.id, type: typeof c.id, name: c.name})));
+                console.log('🔍 Found client:', client);
+                        const jobStaff = job.staff_ids ? job.staff_ids.map(id => staff.find(s => s.id === id)).filter(s => s) : [];
+                        
+                        html += `
+                            <div class="week-job-card" onclick="selectDay(${i}, '${dateStr}'); setViewMode('day');" style="cursor: pointer;">
+                                <div class="week-job-time">${job.time}</div>
+                                <div class="week-job-client">${client ? client.name : 'Unknown'}</div>
+                                <div class="week-job-info">${job.hours}h • ${jobStaff.length} staff</div>
+                            </div>
+                        `;
+                    });
+                }
+                
+                html += `</div>`;
+            }
+            
+            container.innerHTML = html;
+        }
+
+        // RENDER JOBS
+        function renderJobs() {
+            const container = document.getElementById('jobs-list');
+            
+            if (!selectedDate) {
+                container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📅</div><p>Select a day to view jobs</p></div>';
+                return;
+            }
+            
+            const dayJobs = jobs.filter(j => j.date === selectedDate).sort((a,b) => a.time.localeCompare(b.time));
+            
+            console.log('Rendering jobs for', selectedDate, ':', dayJobs.length, 'jobs found');
+            
+            if (dayJobs.length === 0) {
+                container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📋</div><p>No jobs scheduled</p></div>';
+                return;
+            }
+            
+            container.innerHTML = dayJobs.map(job => {
+                const client = clients.find(c => c.id === job.client_id);
+                console.log('🔍 Job lookup - job.client_id:', job.client_id, 'type:', typeof job.client_id);
+                console.log('🔍 Available clients:', clients.map(c => ({id: c.id, type: typeof c.id, name: c.name})));
+                console.log('🔍 Found client:', client);
+                const jobStaff = job.staff_ids.map(id => staff.find(s => s.id === id)).filter(s => s);
+                
+                return `
+                    <div class="job-card">
+                        <div class="job-time">⏰ ${job.time} (${job.hours}h)</div>
+                        <div class="job-client">${client ? client.name : 'Unknown'}</div>
+                        <div class="job-info">📍 ${client ? client.address : 'N/A'}</div>
+                        ${job.recurring && job.recurring !== 'one-off' ? `<div class="job-info" style="color: #667eea; font-weight: 600;">🔄 ${job.recurring.charAt(0).toUpperCase() + job.recurring.slice(1)} recurring</div>` : ''}
+                        ${job.notes ? `<div class="job-info">📝 ${job.notes}</div>` : ''}
+                        <div>
+                            ${jobStaff.map(s => `<span class="staff-badge">👷 ${s.name}</span>`).join('')}
+                        </div>
+                        <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
+                            <button class="btn-submit" style="flex: 1; padding: 0.5rem; font-size: 0.875rem;" onclick="editJob(${job.id})">✏️ Edit</button>
+                            <button class="delete-btn" style="flex: 1;" onclick="deleteJob(${job.id})">🗑️ Delete</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // RENDER STAFF
+        function renderStaff() {
+            const container = document.getElementById('staff-list');
+            
+            if (staff.length === 0) {
+                container.innerHTML = '<div class="empty-state"><p>No staff members</p></div>';
+                return;
+            }
+            
+            container.innerHTML = staff.map(s => `
+                <div class="card">
+                    <h4>${s.name}</h4>
+                    <div class="card-info">📞 ${s.phone}</div>
+                    <div class="card-info" style="color: #667eea; font-weight: 700; font-size: 1.1rem;">💵 $${(s.rate || 0).toFixed(2)}/hour</div>
+                    <div class="card-info">${s.role}</div>
+                    ${s.email ? `<div class="card-info">📧 ${s.email}</div>` : ''}
+                    <button class="add-btn" style="margin-top: 1rem; width: 100%; background: linear-gradient(135deg, #667eea, #764ba2);" onclick="showHoursWorked(${s.id})">📊 Hours Worked</button>
+                    <div style="display: flex; gap: 0.5rem; margin-top: 0.5rem;">
+                        <button class="btn-submit" style="flex: 1; padding: 0.5rem; font-size: 0.875rem;" onclick="editStaff(${s.id})">✏️ Edit</button>
+                        <button class="delete-btn" style="flex: 1;" onclick="deleteStaff(${s.id})">Remove</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // RENDER CLIENTS
+        function renderClients() {
+            const container = document.getElementById('clients-list');
+            
+            if (clients.length === 0) {
+                container.innerHTML = '<div class="empty-state"><p>No clients</p></div>';
+                return;
+            }
+            
+            container.innerHTML = clients.map(c => `
+                <div class="card">
+                    <h4>${c.name}</h4>
+                    <div class="card-info">📞 ${c.phone}</div>
+                    <div class="card-info" style="color: #10b981; font-weight: 700; font-size: 1.1rem;">💵 $${(c.rate || 0).toFixed(2)}/hour</div>
+                    <div class="card-info">📍 ${c.address}</div>
+                    <div class="card-info">🏢 ${c.type}</div>
+                    <div class="card-info">🔄 ${c.frequency}</div>
+                    <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
+                        <button class="btn-submit" style="flex: 1; padding: 0.5rem; font-size: 0.875rem;" onclick="editClient(${c.id})">✏️ Edit</button>
+                        <button class="delete-btn" style="flex: 1;" onclick="deleteClient(${c.id})">Delete</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // MODALS
+        function openJobModal() {
+            if (!selectedDate) {
+                alert('Please select a day first!');
+                return;
+            }
+            
+            // Populate clients
+            document.getElementById('job-client').innerHTML = 
+                '<option value="">Select client...</option>' +
+                clients.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+            
+            // Populate staff checkboxes
+            document.getElementById('staff-checkboxes').innerHTML = 
+                staff.map(s => `
+                    <div class="staff-check-item">
+                        <input type="checkbox" id="staff-${s.id}" value="${s.id}">
+                        <label for="staff-${s.id}">${s.name} - ${s.role}</label>
+                    </div>
+                `).join('');
+            
+            // Set date
+            document.getElementById('job-date').value = selectedDate;
+            
+            document.getElementById('job-modal').classList.add('active');
+        }
+
+        function openStaffModal() {
+            document.getElementById('staff-modal').classList.add('active');
+        }
+
+        function openClientModal() {
+            // Populate staff checkboxes for recurring jobs
+            document.getElementById('client-staff-checkboxes').innerHTML = 
+                staff.map(s => `
+                    <div class="staff-check-item">
+                        <input type="checkbox" id="client-staff-${s.id}" value="${s.id}">
+                        <label for="client-staff-${s.id}">${s.name} - ${s.role}</label>
+                    </div>
+                `).join('');
+            
+            document.getElementById('client-modal').classList.add('active');
+        }
+
+        function toggleRecurringFields() {
+            const frequency = document.getElementById('client-frequency').value;
+            const recurringFields = document.getElementById('recurring-fields');
+            
+            if (frequency && frequency !== 'One-off') {
+                recurringFields.style.display = 'block';
+                
+                // Set required attributes
+                document.getElementById('client-start-date').required = true;
+                document.getElementById('client-start-time').required = true;
+                document.getElementById('client-hours').required = true;
+            } else {
+                recurringFields.style.display = 'none';
+                
+                // Remove required attributes
+                document.getElementById('client-start-date').required = false;
+                document.getElementById('client-start-time').required = false;
+                document.getElementById('client-hours').required = false;
+            }
+        }
+
+        function closeModal(type) {
+            document.getElementById(type + '-modal').classList.remove('active');
+            document.getElementById(type + '-form').reset();
+            
+            // Reset recurring fields display for client modal
+            if (type === 'client') {
+                document.getElementById('recurring-fields').style.display = 'none';
+            }
+        }
+
+        function switchTab(tab, evt) {
+            // Remove active from all views
+            document.getElementById('dashboard-view').classList.remove('active');
+            document.getElementById('schedule-view').classList.remove('active');
+            document.getElementById('staff-view').classList.remove('active');
+            document.getElementById('clients-view').classList.remove('active');
+            
+            // Add active to selected view
+            document.getElementById(tab + '-view').classList.add('active');
+            
+            // Update tab buttons
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            if (evt && evt.target) {
+                evt.target.classList.add('active');
+            }
+        }
+
+        // FORM SUBMISSIONS
+        
+
+        
+
+        
+
+        async function createRecurringJobs(clientId, staffIds, startDate, startTime, hours, frequency) {
+            let intervalDays = 0;
+            
+            switch(frequency) {
+                case 'Daily': intervalDays = 1; break;
+                case 'Weekly': intervalDays = 7; break;
+                case 'Fortnightly': intervalDays = 14; break;
+                case 'Monthly': intervalDays = 30; break;
+            }
+            
+            console.log(`Creating recurring jobs with ${intervalDays} day interval`);
+            
+            // Create 12 occurrences
+            for (let i = 0; i < 12; i++) {
+                const jobDate = new Date(startDate);
+                jobDate.setDate(jobDate.getDate() + (intervalDays * i));
+                
+                const newJob = {
+                    client_id: clientId,
+                    staff_ids: staffIds,
+                    date: jobDate.toISOString().split('T')[0],
+                    time: startTime,
+                    hours: hours,
+                    notes: 'Recurring job'
+                };
+                
+                const saved = await saveJob(newJob); if (saved) jobs.push(saved);
+                console.log(`Created job ${i + 1}:`, newJob.date);
+            }
+            
+            console.log(`Created ${12} recurring jobs`);
+            renderDashboard(); // Update dashboard with new jobs
+        }
+
+        // EDIT STAFF
+        function editStaff(staffId) {
+            const staffMember = staff.find(s => s.id === staffId);
+            if (!staffMember) return;
+            
+            console.log('Editing staff:', staffMember);
+            
+            document.getElementById('edit-staff-id').value = staffId;
+            document.getElementById('edit-staff-name').value = staffMember.name;
+            document.getElementById('edit-staff-phone').value = staffMember.phone;
+            document.getElementById('edit-staff-rate').value = staffMember.rate || 0;
+            document.getElementById('edit-staff-email').value = staffMember.email || '';
+            document.getElementById('edit-staff-role').value = staffMember.role;
+            
+            document.getElementById('edit-staff-modal').classList.add('active');
+        }
+
+        
+
+        // EDIT CLIENT
+        function editClient(clientId) {
+            const client = clients.find(c => c.id === clientId);
+            if (!client) return;
+            
+            console.log('Editing client:', client);
+            
+            document.getElementById('edit-client-id').value = clientId;
+            document.getElementById('edit-client-name').value = client.name;
+            document.getElementById('edit-client-phone').value = client.phone;
+            document.getElementById('edit-client-rate').value = client.rate || 0;
+            document.getElementById('edit-client-address').value = client.address;
+            document.getElementById('edit-client-type').value = client.type;
+            document.getElementById('edit-client-frequency').value = client.frequency;
+            
+            document.getElementById('edit-client-modal').classList.add('active');
+        }
+
+        
+
+        // EDIT JOB
+        function editJob(jobId) {
+            const job = jobs.find(j => j.id === jobId);
+            if (!job) return;
+            
+            console.log('Editing job:', job);
+            
+            // Set job ID
+            document.getElementById('edit-job-id').value = jobId;
+            
+            // Populate clients dropdown
+            document.getElementById('edit-job-client').innerHTML = 
+                '<option value="">Select client...</option>' +
+                clients.map(c => `<option value="${c.id}" ${c.id === job.client_id ? 'selected' : ''}>${c.name}</option>`).join('');
+            
+            // Populate staff checkboxes and check the ones assigned
+            document.getElementById('edit-staff-checkboxes').innerHTML = 
+                staff.map(s => {
+                    const isChecked = job.staff_ids && job.staff_ids.includes(s.id);
+                    return `
+                        <div class="staff-check-item">
+                            <input type="checkbox" id="edit-staff-${s.id}" value="${s.id}" ${isChecked ? 'checked' : ''}>
+                            <label for="edit-staff-${s.id}">${s.name} - ${s.role}</label>
+                        </div>
+                    `;
+                }).join('');
+            
+            // Set other fields
+            document.getElementById('edit-job-date').value = job.date;
+            document.getElementById('edit-job-time').value = job.time;
+            document.getElementById('edit-job-hours').value = job.hours;
+            document.getElementById('edit-job-recurring').value = job.recurring || 'one-off';
+            document.getElementById('edit-job-notes').value = job.notes || '';
+            
+            // Open modal
+            document.getElementById('edit-job-modal').classList.add('active');
+        }
+
+        // HOURS WORKED
+        let currentStaffId = null;
+
+        function showHoursWorked(staffId) {
+            currentStaffId = staffId;
+            const staffMember = staff.find(s => s.id === staffId);
+            
+            if (!staffMember) return;
+            
+            document.getElementById('hours-staff-name').textContent = staffMember.name;
+            
+            // Set default date range (last 30 days)
+            const today = new Date();
+            const thirtyDaysAgo = new Date();
+            thirtyDaysAgo.setDate(today.getDate() - 30);
+            
+            document.getElementById('hours-from').value = thirtyDaysAgo.toISOString().split('T')[0];
+            document.getElementById('hours-to').value = today.toISOString().split('T')[0];
+            
+            calculateHours();
+            
+            document.getElementById('hours-modal').classList.add('active');
+        }
+
+        function calculateHours() {
+            if (!currentStaffId) return;
+            
+            const fromDate = document.getElementById('hours-from').value;
+            const toDate = document.getElementById('hours-to').value;
+            
+            if (!fromDate || !toDate) return;
+            
+            const staffMember = staff.find(s => s.id === currentStaffId);
+            if (!staffMember) return;
+            
+            // Find all jobs for this staff member in date range
+            const staffJobs = jobs.filter(j => {
+                const isInRange = j.date >= fromDate && j.date <= toDate;
+                const isAssigned = j.staff_ids && j.staff_ids.includes(currentStaffId);
+                return isInRange && isAssigned;
+            }).sort((a, b) => a.date.localeCompare(b.date));
+            
+            console.log('Found', staffJobs.length, 'jobs for staff', currentStaffId, 'between', fromDate, 'and', toDate);
+            
+            const resultsDiv = document.getElementById('hours-results');
+            
+            if (staffJobs.length === 0) {
+                resultsDiv.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📊</div>
+                        <p>No jobs in this date range</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Calculate total hours
+            const totalHours = staffJobs.reduce((sum, job) => sum + (job.hours || 0), 0);
+            
+            // Calculate pay amount
+            const staffRate = staffMember.rate || 0;
+            const totalPay = totalHours * staffRate;
+            
+            resultsDiv.innerHTML = `
+                <div style="background: linear-gradient(135deg, #10b981, #059669); color: white; padding: 2rem; border-radius: 12px; text-align: center; margin-bottom: 1rem;">
+                    <div style="font-size: 3rem; font-weight: 800;">${totalHours.toFixed(1)} hrs</div>
+                    <div style="opacity: 0.9; margin-top: 0.5rem;">Total Hours Worked</div>
+                    <div style="opacity: 0.9; margin-top: 0.5rem;">${staffJobs.length} jobs completed</div>
+                </div>
+                <div style="background: linear-gradient(135deg, #667eea, #764ba2); color: white; padding: 2rem; border-radius: 12px; text-align: center; margin-bottom: 1.5rem;">
+                    <div style="font-size: 3rem; font-weight: 800;">$${totalPay.toFixed(2)}</div>
+                    <div style="opacity: 0.9; margin-top: 0.5rem;">Amount to Pay</div>
+                    <div style="opacity: 0.9; margin-top: 0.5rem; font-size: 0.875rem;">$${staffRate.toFixed(2)}/hour × ${totalHours.toFixed(1)} hours</div>
+                </div>
+                <div style="max-height: 400px; overflow-y: auto;">
+                    <h4 style="margin-bottom: 1rem; color: #1a202c;">Job Details</h4>
+                    ${staffJobs.map(job => {
+                        const client = clients.find(c => c.id === job.client_id);
+                console.log('🔍 Job lookup - job.client_id:', job.client_id, 'type:', typeof job.client_id);
+                console.log('🔍 Available clients:', clients.map(c => ({id: c.id, type: typeof c.id, name: c.name})));
+                console.log('🔍 Found client:', client);
+                        const date = new Date(job.date);
+                        const jobPay = job.hours * staffRate;
+                        return `
+                            <div style="padding: 1rem; background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 8px; margin-bottom: 0.75rem;">
+                                <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 0.5rem;">
+                                    <div style="font-weight: 600;">
+                                        ${date.toLocaleDateString('en-AU', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' })}
+                                    </div>
+                                    <div style="font-weight: 700; color: #667eea; font-size: 1.1rem;">
+                                        $${jobPay.toFixed(2)}
+                                    </div>
+                                </div>
+                                <div style="color: #64748b; font-size: 0.9rem;">
+                                    <div style="margin-bottom: 0.25rem;">🏢 ${client ? client.name : 'Unknown Client'}</div>
+                                    <div style="margin-bottom: 0.25rem;">⏰ ${job.time} • <strong>${job.hours} hours</strong></div>
+                                    ${job.notes ? `<div>📝 ${job.notes}</div>` : ''}
+                                </div>
+                            </div>
+                        `;
+                    }).join('')}
+                </div>
+            `;
+        }
+
+        
+
+        // DELETE FUNCTIONS
+        async function deleteJob(id) {
+            if (confirm('Delete this job?')) { await deleteJobDB(id); jobs = jobs.filter(j => j.id !== id);
+                renderJobs();
+            }
+        }
+
+        async function deleteStaff(id) {
+            if (confirm('Remove this staff member?')) { await deleteStaffDB(id); staff = staff.filter(s => s.id !== id);
+                renderStaff();
+            }
+        }
+
+        async function deleteClient(id) {
+            if (confirm('Delete this client?')) { await deleteClientDB(id); clients = clients.filter(c => c.id !== id);
+                renderClients();
+            }
+        }
+
+        // Close modal on outside click
+
+        
+        // Register all form event listeners after DOM is ready
+        function registerFormListeners() {
+            const job_formEl = document.getElementById('job-form');
+        if (job_formEl) {
+            document.getElementById('job-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const staffChecked = Array.from(document.querySelectorAll('#staff-checkboxes input:checked'));
+            const staffIds = staffChecked.map(cb => parseInt(cb.value));
+            
+            if (staffIds.length === 0) {
+                alert('Please select at least one staff member!');
+                return;
+            }
+            
+            const recurring = document.getElementById('job-recurring').value;
+            
+            const clientIdValue = document.getElementById('job-client').value;
+            console.log('🔍 Reading client dropdown value:', clientIdValue, 'type:', typeof clientIdValue);
+            
+            const newJob = {
+                client_id: parseInt(clientIdValue),
+                staff_ids: staffIds,
+                date: document.getElementById('job-date').value,
+                time: document.getElementById('job-time').value,
+                hours: parseFloat(document.getElementById('job-hours').value),
+                notes: document.getElementById('job-notes').value,
+                recurring: recurring
+            };
+            
+            console.log('Adding job:', newJob);
+            
+            const saved = await saveJob(newJob); if (saved) jobs.push(saved);
+            
+            // If recurring, create additional jobs
+            if (recurring !== 'one-off') {
+                const intervalDays = {
+                    'daily': 1,
+                    'weekly': 7,
+                    'fortnightly': 14,
+                    'monthly': 30
+                }[recurring];
+                
+                console.log(`Creating recurring jobs with ${intervalDays} day interval`);
+                
+                // Create next 12 occurrences
+                for (let i = 1; i <= 12; i++) {
+                    const nextDate = new Date(newJob.date);
+                    nextDate.setDate(nextDate.getDate() + (intervalDays * i));
+                    
+                    const recurringJob = {
+                        client_id: newJob.client_id,
+                        staff_ids: [...newJob.staff_ids],
+                        date: nextDate.toISOString().split('T')[0],
+                        time: newJob.time,
+                        hours: newJob.hours,
+                        notes: newJob.notes,
+                        recurring: recurring,
+                        is_recurring_instance: true
+                    };
+                    
+                    const saved = await saveJob(recurringJob); if (saved) jobs.push(saved);
+                    console.log(`Created recurring job ${i}:`, recurringJob.date);
+                }
+                
+                console.log(`Created ${12} recurring jobs`);
+            }
+            
+            console.log('Total jobs now:', jobs.length);
+            
+            renderJobs();
+            if (viewMode === 'week') {
+                renderWeekView();
+            }
+            renderDashboard(); // Update dashboard
+            closeModal('job');
+            
+            if (recurring !== 'one-off') {
+                alert(`✅ Job scheduled successfully!\n\n${recurring.charAt(0).toUpperCase() + recurring.slice(1)} recurring - 12 jobs created automatically.`);
+            } else {
+                alert('✅ Job scheduled successfully!');
+            }
+        });
+        }
+            const staff_formEl = document.getElementById('staff-form');
+        if (staff_formEl) {
+            document.getElementById('staff-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const newStaff = {
+                name: document.getElementById('staff-name').value,
+                phone: document.getElementById('staff-phone').value,
+                rate: parseFloat(document.getElementById('staff-rate').value),
+                email: document.getElementById('staff-email').value,
+                role: document.getElementById('staff-role').value
+            };
+            
+            const saved = await saveStaff(newStaff); if (saved) staff.push(saved);
+            renderStaff();
+            closeModal('staff');
+            
+            alert('✅ Staff added!');
+        });
+        }
+            const client_formEl = document.getElementById('client-form');
+        if (client_formEl) {
+            document.getElementById('client-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const frequency = document.getElementById('client-frequency').value;
+            
+            const newClient = {
+                name: document.getElementById('client-name').value,
+                phone: document.getElementById('client-phone').value,
+                rate: parseFloat(document.getElementById('client-rate').value),
+                address: document.getElementById('client-address').value,
+                type: document.getElementById('client-type').value,
+                frequency: frequency
+            };
+            
+            const saved = await saveClient(newClient); if (saved) clients.push(saved);
+            console.log('Client added:', newClient);
+            
+            // If recurring frequency, create jobs automatically
+            if (frequency !== 'One-off' && frequency) {
+                const staffChecked = Array.from(document.querySelectorAll('#client-staff-checkboxes input:checked'));
+                const staffIds = staffChecked.map(cb => parseInt(cb.value));
+                
+                if (staffIds.length === 0) {
+                    alert('Please select at least one staff member for recurring jobs!');
+                    clients.pop(); // Remove the client we just added
+                    return;
+                }
+                
+                const startDate = document.getElementById('client-start-date').value;
+                const startTime = document.getElementById('client-start-time').value;
+                const hours = parseFloat(document.getElementById('client-hours').value);
+                
+                if (!startDate || !startTime) {
+                    alert('Please enter start date and time for recurring jobs!');
+                    clients.pop(); // Remove the client we just added
+                    return;
+                }
+                
+                // Create recurring jobs - use saved.id (from Supabase)
+                await createRecurringJobs(saved.id, staffIds, startDate, startTime, hours, frequency);
+                
+                alert(`✅ Client added with ${frequency.toLowerCase()} recurring schedule!\n\n12 jobs automatically created for the next 12 occurrences.`);
+            } else {
+                alert('✅ Client added!');
+            }
+            renderClients();
+            closeModal('client');
+            document.getElementById('client-form').reset();
+        });
+        }
+            const edit_staff_formEl = document.getElementById('edit-staff-form');
+        if (edit_staff_formEl) {
+            document.getElementById('edit-staff-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const staffId = parseInt(document.getElementById('edit-staff-id').value);
+            const staffIndex = staff.findIndex(s => s.id === staffId);
+            
+            if (staffIndex === -1) {
+                alert('Staff member not found!');
+                return;
+            }
+            
+            staff[staffIndex] = {
+                ...staff[staffIndex],
+                name: document.getElementById('edit-staff-name').value,
+                phone: document.getElementById('edit-staff-phone').value,
+                rate: parseFloat(document.getElementById('edit-staff-rate').value),
+                email: document.getElementById('edit-staff-email').value,
+                role: document.getElementById('edit-staff-role').value
+            }; await updateStaff(staff[staffIndex]);
+            
+            console.log('Staff updated:', staff[staffIndex]);
+            renderStaff();
+            closeModal('edit-staff');
+            
+            alert('✅ Staff member updated successfully!');
+        });
+        }
+            const edit_client_formEl = document.getElementById('edit-client-form');
+        if (edit_client_formEl) {
+            document.getElementById('edit-client-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const clientId = parseInt(document.getElementById('edit-client-id').value);
+            const clientIndex = clients.findIndex(c => c.id === clientId);
+            
+            if (clientIndex === -1) {
+                alert('Client not found!');
+                return;
+            }
+            
+            clients[clientIndex] = {
+                ...clients[clientIndex],
+                name: document.getElementById('edit-client-name').value,
+                phone: document.getElementById('edit-client-phone').value,
+                rate: parseFloat(document.getElementById('edit-client-rate').value),
+                address: document.getElementById('edit-client-address').value,
+                type: document.getElementById('edit-client-type').value,
+                frequency: document.getElementById('edit-client-frequency').value
+            }; await updateClient(clients[clientIndex]);
+            
+            console.log('Client updated:', clients[clientIndex]);
+            renderClients();
+            renderDashboard(); // Update dashboard revenue
+            closeModal('edit-client');
+            
+            alert('✅ Client updated successfully!');
+        });
+        }
+            const edit_job_formEl = document.getElementById('edit-job-form');
+        if (edit_job_formEl) {
+            document.getElementById('edit-job-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const jobId = parseInt(document.getElementById('edit-job-id').value);
+            const jobIndex = jobs.findIndex(j => j.id === jobId);
+            
+            if (jobIndex === -1) {
+                alert('Job not found!');
+                return;
+            }
+            
+            const staffChecked = Array.from(document.querySelectorAll('#edit-staff-checkboxes input:checked'));
+            const staffIds = staffChecked.map(cb => parseInt(cb.value));
+            
+            if (staffIds.length === 0) {
+                alert('Please select at least one staff member!');
+                return;
+            }
+            
+            // Update the job
+            jobs[jobIndex] = {
+                ...jobs[jobIndex],
+                client_id: parseInt(document.getElementById('edit-job-client').value),
+                staff_ids: staffIds,
+                date: document.getElementById('edit-job-date').value,
+                time: document.getElementById('edit-job-time').value,
+                hours: parseFloat(document.getElementById('edit-job-hours').value),
+                recurring: document.getElementById('edit-job-recurring').value,
+                notes: document.getElementById('edit-job-notes').value
+            }; await updateJob(jobs[jobIndex]);
+            
+            console.log('Job updated:', jobs[jobIndex]);
+            renderJobs();
+            if (viewMode === 'week') {
+                renderWeekView();
+            }
+            renderDashboard(); // Update dashboard
+            closeModal('edit-job');
+            
+            alert('✅ Job updated successfully!\n\nThe hours worked will now reflect the updated hours.');
+        });
+        }
+        }
+        
+        // Call after page loads
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', registerFormListeners);
+        } else {
+            registerFormListeners();
+        }
+
+        // Listen for auth changes
+        supabaseClient.auth.onAuthStateChange((event, session) => {
+            console.log('Auth event:', event)
+            if (event === 'SIGNED_IN') {
+                currentUser = session.user
+                showApp()
+            } else if (event === 'SIGNED_OUT') {
+                currentUser = null
+                showAuth()
+            }
+        })
+    </script>
+
+    <!-- Edit Staff Modal -->
+    <div id="edit-staff-modal" class="modal">
+        <div class="modal-content">
+            <h3>Edit Staff Member</h3>
+            <form id="edit-staff-form">
+                <input type="hidden" id="edit-staff-id">
+                
+                <div class="form-group">
+                    <label class="form-label">Name *</label>
+                    <input type="text" class="form-input" id="edit-staff-name" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Phone *</label>
+                    <input type="tel" class="form-input" id="edit-staff-phone" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Hourly Rate *</label>
+                    <input type="number" class="form-input" id="edit-staff-rate" step="0.01" min="0" required>
+                    <small style="color: #64748b; margin-top: 0.5rem; display: block;">
+                        💵 How much you pay this staff member per hour
+                    </small>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Email</label>
+                    <input type="email" class="form-input" id="edit-staff-email">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Role *</label>
+                    <select class="form-select" id="edit-staff-role" required>
+                        <option value="">Select role...</option>
+                        <option value="Cleaner">Cleaner</option>
+                        <option value="Senior Cleaner">Senior Cleaner</option>
+                        <option value="Team Lead">Team Lead</option>
+                    </select>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-cancel" onclick="closeModal('edit-staff')">Cancel</button>
+                    <button type="submit" class="btn-submit">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Job Modal -->
+    <div id="job-modal" class="modal">
+        <div class="modal-content">
+            <h3>Schedule Job</h3>
+            <form id="job-form">
+                <div class="form-group">
+                    <label class="form-label">Client *</label>
+                    <select class="form-select" id="job-client" required>
+                        <option value="">Select client...</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Select Staff *</label>
+                    <div class="staff-checkboxes" id="staff-checkboxes"></div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Date *</label>
+                    <input type="date" class="form-input" id="job-date" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Time *</label>
+                    <input type="time" class="form-input" id="job-time" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Hours *</label>
+                    <input type="number" class="form-input" id="job-hours" step="0.5" min="0.5" value="2" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Recurring</label>
+                    <select class="form-select" id="job-recurring">
+                        <option value="one-off">One-off (single job)</option>
+                        <option value="daily">Daily</option>
+                        <option value="weekly">Weekly</option>
+                        <option value="fortnightly">Fortnightly</option>
+                        <option value="monthly">Monthly</option>
+                    </select>
+                    <small style="color: #64748b; margin-top: 0.5rem; display: block;">
+                        🔄 Recurring jobs will automatically create the next 12 occurrences
+                    </small>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Notes</label>
+                    <textarea class="form-textarea" id="job-notes" rows="3"></textarea>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-cancel" onclick="closeModal('job')">Cancel</button>
+                    <button type="submit" class="btn-submit">Schedule Job</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Staff Modal -->
+    <div id="staff-modal" class="modal">
+        <div class="modal-content">
+            <h3>Add Staff Member</h3>
+            <form id="staff-form">
+                <div class="form-group">
+                    <label class="form-label">Name *</label>
+                    <input type="text" class="form-input" id="staff-name" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Phone *</label>
+                    <input type="tel" class="form-input" id="staff-phone" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Hourly Rate *</label>
+                    <input type="number" class="form-input" id="staff-rate" step="0.01" min="0" placeholder="e.g., 35.00" required>
+                    <small style="color: #64748b; margin-top: 0.5rem; display: block;">
+                        💵 How much you pay this staff member per hour
+                    </small>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Email</label>
+                    <input type="email" class="form-input" id="staff-email">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Role *</label>
+                    <select class="form-select" id="staff-role" required>
+                        <option value="">Select role...</option>
+                        <option value="Cleaner">Cleaner</option>
+                        <option value="Senior Cleaner">Senior Cleaner</option>
+                        <option value="Team Lead">Team Lead</option>
+                    </select>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-cancel" onclick="closeModal('staff')">Cancel</button>
+                    <button type="submit" class="btn-submit">Add Staff</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Client Modal -->
+    <div id="client-modal" class="modal">
+        <div class="modal-content">
+            <h3>Add Client</h3>
+            <form id="client-form">
+                <div class="form-group">
+                    <label class="form-label">Name *</label>
+                    <input type="text" class="form-input" id="client-name" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Phone *</label>
+                    <input type="tel" class="form-input" id="client-phone" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Rate per Hour *</label>
+                    <input type="number" class="form-input" id="client-rate" step="0.01" min="0" placeholder="e.g., 150.00" required>
+                    <small style="color: #64748b; margin-top: 0.5rem; display: block;">
+                        💵 How much you charge this client per hour
+                    </small>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Address *</label>
+                    <input type="text" class="form-input" id="client-address" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Property Type *</label>
+                    <select class="form-select" id="client-type" required>
+                        <option value="">Select type...</option>
+                        <option value="Residential - House">Residential - House</option>
+                        <option value="Residential - Apartment">Residential - Apartment</option>
+                        <option value="Commercial - Office">Commercial - Office</option>
+                        <option value="Commercial - Retail">Commercial - Retail</option>
+                        <option value="Commercial - Medical">Commercial - Medical</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Frequency *</label>
+                    <select class="form-select" id="client-frequency" required onchange="toggleRecurringFields()">
+                        <option value="">Select frequency...</option>
+                        <option value="Daily">Daily</option>
+                        <option value="Weekly">Weekly</option>
+                        <option value="Fortnightly">Fortnightly</option>
+                        <option value="Monthly">Monthly</option>
+                        <option value="One-off">One-off</option>
+                    </select>
+                </div>
+                
+                <!-- Recurring Schedule Fields -->
+                <div id="recurring-fields" style="display: none; background: #f8fafc; padding: 1.5rem; border-radius: 8px; margin-top: 1rem;">
+                    <h4 style="margin-bottom: 1rem; color: #1a202c;">🔄 Recurring Schedule</h4>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Select Staff for Recurring Jobs *</label>
+                        <div class="staff-checkboxes" id="client-staff-checkboxes"></div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">First Cleaning Date *</label>
+                        <input type="date" class="form-input" id="client-start-date">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Cleaning Time *</label>
+                        <input type="time" class="form-input" id="client-start-time">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Hours per Job *</label>
+                        <input type="number" class="form-input" id="client-hours" step="0.5" min="0.5" value="2">
+                    </div>
+                    
+                    <p style="color: #64748b; font-size: 0.875rem; margin-top: 1rem;">
+                        📅 This will automatically create jobs for the next 12 weeks
+                    </p>
+                </div>
+                
+                <div class="modal-actions">
+                    <button type="button" class="btn-cancel" onclick="closeModal('client')">Cancel</button>
+                    <button type="submit" class="btn-submit">Add Client</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Edit Job Modal -->
+    <div id="edit-job-modal" class="modal">
+        <div class="modal-content">
+            <h3>Edit Job</h3>
+            <form id="edit-job-form">
+                <input type="hidden" id="edit-job-id">
+                
+                <div class="form-group">
+                    <label class="form-label">Client *</label>
+                    <select class="form-select" id="edit-job-client" required>
+                        <option value="">Select client...</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Select Staff *</label>
+                    <div class="staff-checkboxes" id="edit-staff-checkboxes"></div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Date *</label>
+                    <input type="date" class="form-input" id="edit-job-date" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Time *</label>
+                    <input type="time" class="form-input" id="edit-job-time" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Hours *</label>
+                    <input type="number" class="form-input" id="edit-job-hours" step="0.5" min="0.5" required>
+                    <small style="color: #64748b; margin-top: 0.5rem; display: block;">
+                        💡 Update this if the actual time taken was different (e.g., change 3.5 to 4)
+                    </small>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Recurring</label>
+                    <select class="form-select" id="edit-job-recurring">
+                        <option value="one-off">One-off (single job)</option>
+                        <option value="daily">Daily</option>
+                        <option value="weekly">Weekly</option>
+                        <option value="fortnightly">Fortnightly</option>
+                        <option value="monthly">Monthly</option>
+                    </select>
+                    <small style="color: #64748b; margin-top: 0.5rem; display: block;">
+                        ⚠️ Changing this won't affect existing recurring jobs
+                    </small>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Notes</label>
+                    <textarea class="form-textarea" id="edit-job-notes" rows="3"></textarea>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-cancel" onclick="closeModal('edit-job')">Cancel</button>
+                    <button type="submit" class="btn-submit">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Edit Client Modal -->
+    <div id="edit-client-modal" class="modal">
+        <div class="modal-content">
+            <h3>Edit Client</h3>
+            <form id="edit-client-form">
+                <input type="hidden" id="edit-client-id">
+                
+                <div class="form-group">
+                    <label class="form-label">Name *</label>
+                    <input type="text" class="form-input" id="edit-client-name" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Phone *</label>
+                    <input type="tel" class="form-input" id="edit-client-phone" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Rate per Hour *</label>
+                    <input type="number" class="form-input" id="edit-client-rate" step="0.01" min="0" required>
+                    <small style="color: #64748b; margin-top: 0.5rem; display: block;">
+                        💵 How much you charge this client per hour
+                    </small>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Address *</label>
+                    <input type="text" class="form-input" id="edit-client-address" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Property Type *</label>
+                    <select class="form-select" id="edit-client-type" required>
+                        <option value="">Select type...</option>
+                        <option value="Residential - House">Residential - House</option>
+                        <option value="Residential - Apartment">Residential - Apartment</option>
+                        <option value="Commercial - Office">Commercial - Office</option>
+                        <option value="Commercial - Retail">Commercial - Retail</option>
+                        <option value="Commercial - Medical">Commercial - Medical</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Frequency *</label>
+                    <select class="form-select" id="edit-client-frequency" required>
+                        <option value="">Select frequency...</option>
+                        <option value="Daily">Daily</option>
+                        <option value="Weekly">Weekly</option>
+                        <option value="Fortnightly">Fortnightly</option>
+                        <option value="Monthly">Monthly</option>
+                        <option value="One-off">One-off</option>
+                    </select>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-cancel" onclick="closeModal('edit-client')">Cancel</button>
+                    <button type="submit" class="btn-submit">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Hours Worked Modal -->
+    <div id="hours-modal" class="modal">
+        <div class="modal-content">
+            <h3>Hours Worked - <span id="hours-staff-name"></span></h3>
+            <div class="form-group">
+                <label class="form-label">From Date</label>
+                <input type="date" class="form-input" id="hours-from" onchange="calculateHours()">
+            </div>
+            <div class="form-group">
+                <label class="form-label">To Date</label>
+                <input type="date" class="form-input" id="hours-to" onchange="calculateHours()">
+            </div>
+            <div id="hours-results" style="margin-top: 1.5rem;"></div>
+            <div class="modal-actions">
+                <button type="button" class="btn-cancel" onclick="closeModal('hours')">Close</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
