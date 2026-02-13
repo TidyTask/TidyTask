@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>TidyTask - Professional Cleaning CRM</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
@@ -79,6 +79,8 @@
             margin-bottom: 0.75rem;
             transition: all 0.3s;
             box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+            touch-action: manipulation; /* Prevents double-tap zoom on iOS */
+            -webkit-tap-highlight-color: transparent; /* Removes tap highlight */
         }
 
         button:hover {
@@ -183,6 +185,309 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+        }
+
+        /* ========================================
+           MOBILE OPTIMIZATIONS - CRITICAL CHANGES
+           ======================================== */
+        
+        @media (max-width: 768px) {
+            /* Reduce overall padding on mobile */
+            body {
+                padding: 1rem;
+            }
+
+            /* Auth container mobile */
+            .auth-container {
+                margin: 50px auto;
+                padding: 2rem 1.5rem;
+                box-shadow: 0 15px 50px rgba(0,0,0,0.2);
+            }
+
+            .auth-container h2 {
+                font-size: 1.8rem;
+            }
+
+            /* Larger tap targets for buttons */
+            button {
+                padding: 1.25rem;
+                font-size: 1.1rem;
+                margin-bottom: 1rem;
+            }
+
+            /* Larger input fields */
+            input, .form-input {
+                padding: 1.25rem;
+                font-size: 1.1rem;
+            }
+
+            /* Header mobile */
+            .header {
+                padding: 1.5rem 1rem;
+            }
+
+            .header h1 {
+                font-size: 1.5rem;
+            }
+
+            /* Tabs stack on mobile */
+            .tabs {
+                flex-direction: column;
+                gap: 0.75rem;
+            }
+
+            .tab {
+                padding: 1.25rem;
+                font-size: 1.1rem;
+            }
+
+            /* Content box mobile */
+            .content-box {
+                padding: 1.5rem 1rem;
+            }
+
+            /* Week navigation mobile */
+            .week-nav {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+
+            .week-nav button {
+                width: 100%;
+                padding: 1rem;
+                font-size: 1.1rem;
+            }
+
+            .week-display {
+                font-size: 1.2rem;
+                padding: 0.75rem 1.5rem;
+            }
+
+            /* Days grid - 2 columns on mobile instead of 7 */
+            .days-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 0.75rem;
+            }
+
+            .day-btn {
+                padding: 1.25rem 0.75rem;
+                font-size: 1rem;
+            }
+
+            /* Job cards mobile */
+            .job-card {
+                padding: 1.25rem;
+            }
+
+            .job-time {
+                font-size: 1.1rem;
+            }
+
+            .job-client {
+                font-size: 1rem;
+            }
+
+            .add-btn {
+                width: 100%;
+                padding: 1rem;
+                font-size: 1.1rem;
+                margin-bottom: 1rem;
+            }
+
+            /* Staff/Client grid - single column on mobile */
+            .grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .card {
+                padding: 1.25rem;
+            }
+
+            /* Form groups mobile */
+            .form-group {
+                margin-bottom: 1.25rem;
+            }
+
+            label {
+                font-size: 1rem;
+                margin-bottom: 0.75rem;
+            }
+
+            /* Delete buttons larger */
+            .delete-btn {
+                padding: 0.75rem 1.25rem;
+                font-size: 1rem;
+                width: 100%;
+            }
+
+            /* Staff badges mobile */
+            .staff-badge {
+                padding: 0.75rem 1rem;
+                font-size: 0.95rem;
+                margin-bottom: 0.5rem;
+            }
+
+            /* Week view - hide on mobile, too cramped */
+            #week-view-section {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            .week-grid {
+                min-width: 800px;
+            }
+
+            /* View mode buttons */
+            .view-mode-toggle {
+                display: flex;
+                gap: 0.5rem;
+                margin-bottom: 1rem;
+            }
+
+            .view-mode-toggle button {
+                flex: 1;
+                padding: 1rem;
+                font-size: 1rem;
+            }
+
+            /* Message boxes */
+            .message {
+                padding: 1rem;
+                font-size: 1rem;
+            }
+
+            /* Logout button */
+            .logout-btn {
+                padding: 1rem;
+                font-size: 1rem;
+                width: 100%;
+            }
+
+            /* Client/Staff cards */
+            .client-card, .staff-card {
+                padding: 1.25rem;
+            }
+
+            .client-name, .staff-name {
+                font-size: 1.1rem;
+            }
+
+            /* Job form mobile */
+            .job-form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            /* Time inputs side by side on mobile */
+            .time-inputs {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 0.75rem;
+            }
+
+            /* Select dropdowns mobile */
+            select {
+                padding: 1.25rem;
+                font-size: 1.1rem;
+            }
+
+            /* Checkbox labels */
+            .checkbox-label {
+                font-size: 1rem;
+                padding: 1rem;
+            }
+
+            input[type="checkbox"] {
+                width: 1.5rem;
+                height: 1.5rem;
+            }
+
+            /* Modal mobile improvements */
+            .modal {
+                padding: 0.5rem;
+            }
+
+            .modal-content {
+                padding: 1.5rem;
+                max-height: 95vh;
+                border-radius: 12px;
+            }
+
+            .modal-content h3 {
+                font-size: 1.3rem;
+            }
+
+            .modal-actions {
+                flex-direction: column;
+                gap: 0.75rem;
+            }
+
+            .modal-actions button {
+                width: 100%;
+                padding: 1rem;
+            }
+
+            .staff-checkboxes {
+                max-height: 150px;
+            }
+
+            .staff-check-item {
+                padding: 0.75rem;
+            }
+
+            .staff-check-item input {
+                width: 1.5rem;
+                height: 1.5rem;
+            }
+
+            .staff-check-item label {
+                font-size: 1rem;
+            }
+
+            /* Form textarea mobile */
+            textarea {
+                min-height: 100px;
+                font-size: 1.1rem;
+            }
+
+            /* Prevent zoom on input focus (iOS) */
+            input[type="text"],
+            input[type="email"],
+            input[type="password"],
+            input[type="number"],
+            input[type="date"],
+            input[type="time"],
+            select,
+            textarea {
+                font-size: 16px !important; /* Prevents iOS zoom */
+            }
+        }
+
+        /* Extra small phones */
+        @media (max-width: 480px) {
+            body {
+                padding: 0.5rem;
+            }
+
+            .auth-container {
+                padding: 1.5rem 1rem;
+                margin: 30px auto;
+            }
+
+            .auth-container h2 {
+                font-size: 1.5rem;
+            }
+
+            .week-display {
+                font-size: 1rem;
+                padding: 0.5rem 1rem;
+            }
+
+            /* Days grid - single column on very small screens */
+            .days-grid {
+                grid-template-columns: 1fr;
+            }
         }
 
         body {
@@ -1068,7 +1373,9 @@
         let currentWeek = 0;
         let selectedDay = null;
         let selectedDate = null;
-        let viewMode = 'day'; // 'day' or 'week'
+        // Detect mobile and set default view mode
+        const isMobile = window.innerWidth <= 768;
+        let viewMode = isMobile ? 'day' : 'day'; // Default to day view on all devices
 
         // INIT
         function init() {
