@@ -192,15 +192,27 @@
            ======================================== */
         
         @media (max-width: 768px) {
-            /* Reduce overall padding on mobile */
+            /* Prevent horizontal scroll - CRITICAL */
+            html, body {
+                overflow-x: hidden;
+                max-width: 100vw;
+            }
+
+            /* Container fix */
+            .container {
+                max-width: 100%;
+                padding: 0;
+            }
+
+            /* Reduce overall padding on mobile - CRITICAL FIX */
             body {
-                padding: 1rem;
+                padding: 0.5rem !important;
             }
 
             /* Auth container mobile */
             .auth-container {
-                margin: 50px auto;
-                padding: 2rem 1.5rem;
+                margin: 20px auto;
+                padding: 2rem 1rem;
                 box-shadow: 0 15px 50px rgba(0,0,0,0.2);
             }
 
@@ -223,7 +235,7 @@
 
             /* Header mobile */
             .header {
-                padding: 1.5rem 1rem;
+                padding: 1rem 0.75rem;
             }
 
             .header h1 {
@@ -243,7 +255,7 @@
 
             /* Content box mobile */
             .content-box {
-                padding: 1.5rem 1rem;
+                padding: 1rem 0.75rem;
             }
 
             /* Week navigation mobile */
@@ -264,15 +276,22 @@
                 padding: 0.75rem 1.5rem;
             }
 
-            /* Days grid - 2 columns on mobile instead of 7 */
+            /* Days grid - FIXED: horizontal scroll for all days */
             .days-grid {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 0.75rem;
+                display: flex;
+                overflow-x: auto;
+                gap: 0.5rem;
+                -webkit-overflow-scrolling: touch;
+                scroll-snap-type: x mandatory;
+                padding-bottom: 0.5rem;
             }
 
             .day-btn {
-                padding: 1.25rem 0.75rem;
-                font-size: 1rem;
+                flex: 0 0 auto;
+                min-width: 80px;
+                padding: 1rem 0.5rem;
+                font-size: 0.9rem;
+                scroll-snap-align: start;
             }
 
             /* Job cards mobile */
