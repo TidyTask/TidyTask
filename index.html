@@ -276,6 +276,32 @@
                 padding: 0.75rem 1.5rem;
             }
 
+            /* Schedule header - CRITICAL FIX for view buttons */
+            #schedule-view > div[style*="justify-content: space-between"] {
+                flex-direction: column !important;
+                gap: 0.75rem !important;
+                align-items: flex-start !important;
+            }
+
+            #schedule-view h3 {
+                font-size: 1.3rem;
+            }
+
+            /* View mode buttons container */
+            #schedule-view > div[style*="justify-content: space-between"] > div {
+                width: 100% !important;
+                display: flex !important;
+                gap: 0.5rem !important;
+            }
+
+            /* View mode buttons themselves */
+            .day-btn[id*="view-btn"] {
+                flex: 1 !important;
+                padding: 0.75rem !important;
+                font-size: 1rem !important;
+                white-space: nowrap;
+            }
+
             /* Days grid - FIXED: horizontal scroll for all days */
             .days-grid {
                 display: flex;
@@ -292,6 +318,12 @@
                 padding: 1rem 0.5rem;
                 font-size: 0.9rem;
                 scroll-snap-align: start;
+            }
+
+            /* Override for day buttons NOT in the grid */
+            .day-btn:not(.days-grid .day-btn) {
+                flex: 1 !important;
+                min-width: auto !important;
             }
 
             /* Job cards mobile */
